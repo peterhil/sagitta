@@ -5,13 +5,18 @@ Sagitta
 Sagitta is a Haskell inspired strict runtime type system for Python.
 The name Sagitta means ‘arrow‘ in Latin.
 
-It uses several concepts from `category theory`_ and the Haskell type
+It uses several concepts from `category theory`_ and the Haskell type  
 system and is usable for both object oriented and functional programming.
+
+|Build Status|
+
+.. |Build Status| image:: https://secure.travis-ci.org/peterhil/sagitta.png?branch=master
+   :target: http://travis-ci.org/peterhil/sagitta
 
 Arrows and type definitions
 ---------------------------
 
-Arrows_ are morphisms (for Sets, that is functions) between categories.
+Arrows_ are morphisms (for Sets_, that is functions) between categories.
 Essentially arrows are just typed functions between categories (with the
 additional requirement of having an associative_ composition_ operation).
 ::
@@ -66,10 +71,11 @@ Equivalent in Python with Sagitta:
     def equal(x, y):
         return (x == y)
 
-Code is at Github_.
+Sagitta code is at Github_.
 
 .. _category theory: http://en.wikipedia.org/wiki/Category_theory#Categories.2C_objects.2C_and_morphisms_2
 .. _Arrows: http://www.haskell.org/haskellwiki/Arrow
+.. _Sets: http://en.wikipedia.org/wiki/Category_of_sets
 .. _associative: http://en.wikipedia.org/wiki/Associativity
 .. _composition: http://en.wikipedia.org/wiki/Function_composition
 .. _typeclasses: http://learnyouahaskell.com/types-and-typeclasses
