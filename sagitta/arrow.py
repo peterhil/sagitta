@@ -22,21 +22,37 @@ from sagitta.typevar import TypeVariable
 from sagitta.inspect import classname
 
 
-class typed(object):
+def typed(*types, **constraints):
     """
-    Haskell like function type declarations.
-    Can be used as a function or a decorator.
+    Decorator for Haskell like function type declarations.
 
-    Checks that the function is called with compatible arguments,
-    and it's return value is of the declared type when called.
+    The last value of types is always the type of the return value.
+    Constraints can be any typeclass or Python class.
+    """
+    def function(fun):
+        return arrow(fun, *types, **constraints)
+    return function
+
+
+class arrow(object):
+    """
+    An arrow is a function typed with Haskell like function type declaration
+    and it has composition operations for arrows.
+
+    When initialized, checks that the function is compatible with the type
+    declaration.
+
+    When called, checks that it's function is called with arguments that are
+    compatible to type declaration, and the function's return value matches
+    the declared type.
     """
     def __init__(self, fun, *types, **constraints):
         """
-        Initialize a typed function (≈arrow).
+        Initialize an arrow (a typed function with composition operations).
 
         The last value of types is always the type of the return value.
         To specify a signature for function that returns multiple values,
-        use a sequence (tuple, list).
+        use a sequence type (a tuple or a list).
 
         Checks that:
         - given function is callable
@@ -61,7 +77,9 @@ class typed(object):
             for arg, typeclass
             in zip_longest(args, self.signature.args)
         ]
-        return self.check(self._fun(args), self.signature.returns)
+        return self.check(
+            self._fun(*args),
+            self.signature.returns)
 
     def check(self, value, expected):
         if issubclass(expected, TypeVariable):
@@ -128,8 +146,6 @@ class signature(object):
     def __eq__(self, other):
         if isinstance(self, other.__class__):
             return self.type == other.type
-        elif isinstance(other, dict):
-            return self.type == other
         return NotImplemented
 
     def __hash__(self):

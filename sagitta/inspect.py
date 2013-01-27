@@ -13,10 +13,6 @@ Inspection of types, functions and objects
 import abc
 
 
-def istype(obj):
-    return type(obj) in (type, abc.ABCMeta)
-
-
 def classname(obj):
     """
     Name of the object’s class as string
@@ -25,6 +21,25 @@ def classname(obj):
         return obj.__name__
     else:
         return obj.__class__.__name__
+
+
+def istype(obj):
+    return type(obj) in (type, abc.ABCMeta)
+
+
+def issequence(arg):
+    """
+    Checks if arg is a sequence.
+
+    For discussion, see:
+    "check if an object is a list or tuple (but not string)" at
+    http://stackoverflow.com/a/1835259/470560
+    """
+    return (
+        not hasattr(arg, "strip")
+        and hasattr(arg, "__getitem__")
+        or hasattr(arg, "__iter__")
+    )
 
 
 def prop_keys(obj, public=True, private=False, magic=False, globs=False, exclude=None):

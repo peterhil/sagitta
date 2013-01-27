@@ -13,5 +13,5 @@ from sagitta.test import assert_subclass
 class TestTypeVariables(object):
 
     def test_typevars(self):  # pylint: disable=R0201
-        for symbol in string.ascii_uppercase:
+        for symbol in string.ascii_uppercase:  # pylint: disable=W0402
             assert_subclass(getattr(sagitta.typevar, symbol), TypeVariable)

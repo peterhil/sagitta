@@ -11,8 +11,6 @@
 # E1101: Module 'x' has no 'y' member
 # R0903: Too few public methods
 
-import sys
-
 from abc import ABCMeta, abstractmethod
 from numbers import Number, Complex, Real, Rational, Integral
 
@@ -68,14 +66,11 @@ class Monad(Category):
         pass
 
 
-[
+for (cat, sub) in [
+    (Category, Number),
+    (Category, TypeVariable),
+    (Eq, Complex),
+    (Ord, Real),
+    (Arrow, Monad),
+]:
     ABCMeta.register(cat, sub)
-    for (cat, sub) in
-    [
-        (Category, Number),
-        (Category, TypeVariable),
-        (Eq, Complex),
-        (Ord, Real),
-        (Arrow, Monad),
-    ]
-]
