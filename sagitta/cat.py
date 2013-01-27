@@ -1,0 +1,81 @@
+#!/usr/bin/env python -u
+# encoding: utf-8
+#
+# Copyright (c) 2013, Peter Hillerström <peter.hillerstrom@gmail.com>
+# All rights reserved. This software is licensed under MIT license.
+#
+# For the full copyright and license information, please view the LICENSE
+# file that was distributed with this source code.
+
+# pylint: disable=E1101,R0903
+# E1101: Module 'x' has no 'y' member
+# R0903: Too few public methods
+
+from abc import ABCMeta, abstractmethod
+from numbers import Number, Complex, Real, Rational, Integral
+
+
+# Aliases
+Bool = bool  # Can not be subtyped
+Int = Integral
+Num = Number
+
+
+class Category(object):
+
+    __metaclass__ = ABCMeta
+
+Category.register(Number)
+
+
+class TypeVariable(Category):
+    pass
+
+Category.register(TypeVariable)
+
+
+class Eq(Category):
+
+    @abstractmethod
+    def __eq__(self, other):
+        pass
+
+    def __ne__(self, other):
+        return not(self == other)
+
+Eq.register(Complex)
+
+
+class Ord(Eq):
+
+    @abstractmethod
+    def __lt__(self, other):
+        pass
+
+    def __le__(self, other):
+        return (self <= other)
+
+    def __gt__(self, other):
+        return not(self <= other)
+
+    def __ge__(self, other):
+        return not(self < other)
+
+Ord.register(Real)
+
+
+class Arrow(Category):
+    pass
+
+
+class Monad(Category):
+
+    @abstractmethod
+    def mreturn(cls, val):
+        pass
+
+    @abstractmethod
+    def __rshift__(self, f):
+        pass
+
+# Arrow.register(Monad)

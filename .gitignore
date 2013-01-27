@@ -1,0 +1,7 @@
+.coverage
+MANIFEST
+build/
+dist/
+htmlcov/
+venv/
+sagitta.egg-info/
