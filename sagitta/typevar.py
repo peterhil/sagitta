@@ -19,7 +19,7 @@ from sys import modules
 def set_type_variables():
     module = modules.get(__name__)
 
-    for symbol in string.uppercase:
+    for symbol in string.ascii_uppercase:
         typevar = type(symbol, (object,), {})  # Equivalent to: class C(object): pass
 
         setattr(module, symbol, typevar)

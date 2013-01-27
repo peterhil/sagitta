@@ -30,7 +30,7 @@ class TestTypedInit(object):
     def test_less_than_two_types_raises(self, types):
         with raises(TypeError, 'Needs at least two types:'):
             args = [int] + types
-            apply(typed, args)
+            typed(*args)
 
     def test_uncallable_fun_raises(self):
         uncallable = 5
@@ -75,13 +75,13 @@ class TestTypedCall(object):
             t = typed(no, A, Bool)
             t('one', 'extra')  # <-- Expects only one argument
 
-    @pytest.mark.parametrize('length', xrange(1, 4))
+    @pytest.mark.parametrize('length', range(1, 4))
     def test_wrong_arg_types_raises(self, length):
         arglist = [Bool, Int, Real]
         misfits = [4, 0.7, 1 + 1j]
 
         with raises(StrictTypeError, 'is of wrong type for signature'):
-            t = apply(typed, [argcount] + arglist[:length] + [Int])
+            t = typed(*[argcount] + arglist[:length] + [Int])
             t(*misfits[:length])
 
     def test_wrong_return_type_raises(self):

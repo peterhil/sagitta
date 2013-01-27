@@ -17,14 +17,14 @@ def raises(ExpectedException, message=''):
         raise AssertionError("Did not raise expected exception {0}!".format(
             repr(ExpectedException.__name__)
         ))
-    except ExpectedException, err:
-        if message and message not in err.message:
+    except ExpectedException as err:
+        if message and message not in str(err):
             raise AssertionError('expected message "{0}" not in "{1}"'.format(
-                message, err.message
+                message, str(err)
             ))
     except AssertionError:
         raise
-    except Exception, err:
+    except Exception as err:
         raise AssertionError("Expected exception {0}, not\n\t{1}.".format(
             repr(ExpectedException.__name__), repr(err)
         ))

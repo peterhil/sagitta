@@ -11,6 +11,8 @@
 # E1101: Module 'x' has no 'y' member
 # R0903: Too few public methods
 
+import sys
+
 from abc import ABCMeta, abstractmethod
 from numbers import Number, Complex, Real, Rational, Integral
 
@@ -21,17 +23,8 @@ Int = Integral
 Num = Number
 
 
-class Category(object):
-
-    __metaclass__ = ABCMeta
-
-Category.register(Number)
-
-
-class TypeVariable(Category):
-    pass
-
-Category.register(TypeVariable)
+Category = ABCMeta('Category', (object,), {})
+TypeVariable = ABCMeta('TypeVariable', (Category,), {})
 
 
 class Eq(Category):
@@ -42,8 +35,6 @@ class Eq(Category):
 
     def __ne__(self, other):
         return not(self == other)
-
-Eq.register(Complex)
 
 
 class Ord(Eq):
@@ -61,8 +52,6 @@ class Ord(Eq):
     def __ge__(self, other):
         return not(self < other)
 
-Ord.register(Real)
-
 
 class Arrow(Category):
     pass
@@ -78,4 +67,15 @@ class Monad(Category):
     def __rshift__(self, f):
         pass
 
-# Arrow.register(Monad)
+
+[
+    ABCMeta.register(cat, sub)
+    for (cat, sub) in
+    [
+        (Category, Number),
+        (Category, TypeVariable),
+        (Eq, Complex),
+        (Ord, Real),
+        (Arrow, Monad),
+    ]
+]

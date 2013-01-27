@@ -7,9 +7,16 @@
 # For the full copyright and license information, please view the LICENSE
 # file that was distributed with this source code.
 
-from __future__ import print_function
+import sys
 
-from itertools import izip_longest
+if sys.version_info >= (3, 0):
+    from itertools import zip_longest
+else:
+    from itertools import izip_longest as zip_longest
+
+
+from collections import Callable
+
 from sagitta.exceptions import StrictTypeError
 from sagitta.typevar import TypeVariable
 from sagitta.inspect import classname
@@ -37,7 +44,7 @@ class typed(object):
 
         Raises a StrictTypeError if the checks fail.
         """
-        if not callable(fun):
+        if not isinstance(fun, Callable):
             raise StrictTypeError("'{0}' object is not callable.".format(type(fun).__name__))
 
         self._fun = fun
@@ -52,7 +59,7 @@ class typed(object):
         args = [
             self.check(arg, typeclass)
             for arg, typeclass
-            in izip_longest(args, self.signature.args)
+            in zip_longest(args, self.signature.args)
         ]
         return self.check(self._fun(args), self.signature.returns)
 
@@ -68,15 +75,15 @@ class typed(object):
             return value
 
     def __repr__(self):
-        sig = u', '.join(
+        sig = ', '.join(
             [classname(cat) for cat in self.signature.types] +
             [
                 '{0}={1}'.format(str(cls), classname(cat))
                 for cls, cat
-                in self.signature.constraints.items()
+                in list(self.signature.constraints.items())
             ]
         )
-        return u"{0}({1}, {2})".format(
+        return "{0}({1}, {2})".format(
             classname(self),
             self._fun.__name__,
             sig
@@ -129,14 +136,14 @@ class signature(object):
         hash(self.type)
 
     def __repr__(self):
-        return u"{0}({1})".format(
+        return "{0}({1})".format(
             classname(self),
             ', '.join(
                 [classname(cat) for cat in self.types] +
                 [
                     '{0}={1}'.format(str(cls), classname(cat))
                     for (cls, cat)
-                    in self.constraints.items()
+                    in list(self.constraints.items())
                 ]
             )
         )
