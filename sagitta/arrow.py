@@ -122,14 +122,8 @@ class signature(object):
         if len(types) < 2:
             raise TypeError("Needs at least two types: an input type and a return type.")
 
-        self.type = {
-            'types': types,
-            'constraints': constraints,
-        }
-
-    @property
-    def types(self):
-        return self.type['types']
+        self.types = list(types)
+        self.constraints = dict(constraints)
 
     @property
     def args(self):
@@ -139,17 +133,13 @@ class signature(object):
     def returns(self):
         return self.types[-1]
 
-    @property
-    def constraints(self):
-        return self.type['constraints']
-
     def __eq__(self, other):
         if isinstance(self, other.__class__):
-            return self.type == other.type
+            return self.types == other.types and self.constraints == other.constraints
         return NotImplemented
 
     def __hash__(self):
-        hash(self.type)
+        hash(hash(self.types) + hash(self.constraints))
 
     def __repr__(self):
         return "{0}({1})".format(
