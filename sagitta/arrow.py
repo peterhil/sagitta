@@ -16,6 +16,7 @@ else:
 
 
 from collections import Callable
+from functional import compose
 
 from sagitta.exceptions import StrictTypeError
 from sagitta.typevar import TypeVariable
@@ -70,7 +71,7 @@ class arrow(object):
         if len(list(args)) != len(self.signature.args):
             raise StrictTypeError(
                 "wrong number of arguments in '{0}' for {1}."
-                "".format(', '.join(args), self.signature)
+                "".format(args, self.signature)
             )
         args = [
             self.check(arg, typeclass)
@@ -91,6 +92,31 @@ class arrow(object):
             )
         else:
             return value
+
+    def __rshift__(self, other):
+        assert isinstance(other, type(self))
+        common_types = self.signature.types[:-1]
+        assert other.signature.types[:len(common_types) - 1] == common_types[:-1]
+
+        composition = self.compose(self._fun, other._fun)
+
+        common_types.insert(0, composition)
+        common_types.append(other.signature.types[-1])
+        return apply(arrow, common_types)
+
+    def __lshift__(self, other):
+        assert isinstance(other, type(self))
+        return other.__rshift__(self)
+
+    @staticmethod
+    def compose(f1, f2):
+        if not isinstance(f1, Callable):
+            raise StrictTypeError("'{0}' object is not callable.".format(type(f1).__name__))
+        if not isinstance(f2, Callable):
+            raise StrictTypeError("'{0}' object is not callable.".format(type(f2).__name__))
+        def composition(*args, **kwargs):
+            return f2(f1(*args, **kwargs))
+        return composition
 
     def __repr__(self):
         sig = ', '.join(

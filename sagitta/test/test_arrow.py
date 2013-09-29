@@ -7,6 +7,7 @@
 # E1101: Module 'x' has no 'y' member
 # R0201: Method could be a function
 
+import math
 import pytest
 
 from sagitta.arrow import arrow, signature, typed
@@ -91,6 +92,25 @@ class TestTypedCall(object):
             t = arrow(self.argcount, A, Bool)  # <-- Bool should be Int
             t(1)
 
+class TestArrowComposition(object):
+    """
+    Test arrow composition operations
+    """
+    def test_compose(self):
+        sum_of_squares = lambda x, y: x**2 + y**2
+
+        f = arrow(sum_of_squares, Int, Int, Int)
+        g = arrow(math.sqrt, Int, Real)
+
+        assert (f >> g)(3, 4) == 5.0
+
+    def test_compose_left(self):
+        sum_of_squares = lambda x, y: x**2 + y**2
+
+        f = arrow(sum_of_squares, Int, Int, Int)
+        g = arrow(math.sqrt, Int, Real)
+
+        assert (g << f)(3, 4) == 5.0
 
 class TestTypedDecorator(object):
     """
