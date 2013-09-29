@@ -89,8 +89,16 @@ class TestTypedCall(object):
 
     def test_wrong_return_type_raises(self):
         with raises(StrictTypeError, 'is of wrong type for signature'):
-            t = arrow(self.argcount, A, Bool)  # <-- Bool should be Int
+            t = arrow(self.argcount, A, Bool)  # <- bool should be Int
             t(1)
+
+    def test_mismatching_typevariables_raises(self):
+        with raises(StrictTypeError, 'Expected argument'):
+            asum = arrow(self.add, A, A, A)
+            asum(3, 4.0)  # <- both should be of the same type
+        with raises(StrictTypeError, 'Expected argument'):
+            afloat = arrow(float, A, A)  # <- should return float
+            afloat(1)
 
 class TestArrowComposition(object):
     """
