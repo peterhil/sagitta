@@ -74,7 +74,7 @@ class TestTypedCall(object):
         assert type(asum(*args)) is int
 
     def test_wrong_arg_count_raises(self):
-        with raises(StrictTypeError, 'wrong number of arguments in'):
+        with raises(StrictTypeError, 'Wrong number of arguments in'):
             t = arrow(self.no, A, Bool)
             t('one', 'extra')  # <-- Expects only one argument
 

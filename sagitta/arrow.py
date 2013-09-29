@@ -70,7 +70,7 @@ class arrow(object):
     def __call__(self, *args, **kwargs):
         if len(list(args)) != len(self.signature.args):
             raise StrictTypeError(
-                "wrong number of arguments in '{0}' for {1}."
+                "Wrong number of arguments in '{0}' for {1}."
                 "".format(args, self.signature)
             )
         args = [
@@ -84,14 +84,20 @@ class arrow(object):
 
     def check(self, value, expected):
         if issubclass(expected, TypeVariable):
-            return value  # TODO add checks for typeclasses
-        if not issubclass(type(value), expected):
+            if expected in self.signature.constraints:
+                if not issubclass(type(value), self.signature.constraints[expected]):
+                    raise StrictTypeError(
+                        "Expected argument '{0}' {1} to be of type {2}."
+                        "".format(value, type(value), self.signature.constraints[expected])
+                    )
+            else:
+                self.signature.constraints[expected] = type(value)
+        elif not issubclass(type(value), expected):
             raise StrictTypeError(
                 "Argument '{0}' {1} is of wrong type for {3}, expected {2}."
                 "".format(value, type(value), expected, self.signature)
             )
-        else:
-            return value
+        return value
 
     def __rshift__(self, other):
         assert isinstance(other, type(self))
