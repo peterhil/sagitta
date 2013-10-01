@@ -36,7 +36,7 @@ setup(
     version=PACKAGE_VERSION,
     packages=PACKAGES,
     requires=[],
-    install_requires=['distribute'],
+    install_requires=['distribute', 'functional'],
     tests_require=['pytest>=2.3.4'],
     scripts=[],
 
