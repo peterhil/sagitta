@@ -108,7 +108,7 @@ class arrow(object):
 
         common_types.insert(0, composition)
         common_types.append(other.signature.types[-1])
-        return apply(arrow, common_types)
+        return arrow(*common_types)
 
     def __lshift__(self, other):
         assert isinstance(other, type(self))
