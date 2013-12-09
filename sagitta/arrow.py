@@ -18,7 +18,7 @@ else:
 from collections import Callable
 
 from sagitta.exceptions import StrictTypeError
-from sagitta.typevar import TypeVariable
+from sagitta.typevar import A, B, TypeVariable
 from sagitta.inspect import classname
 
 
@@ -67,6 +67,8 @@ class arrow(object):
         self.signature = signature(*types, **constraints)
 
     def __call__(self, *args, **kwargs):
+        # print(len(list(args)), len(self.signature.args))
+        # print(list(args), self.signature.args)
         if len(list(args)) != len(self.signature.args):
             raise StrictTypeError(
                 "wrong number of arguments in '{0}' for {1}."
@@ -89,8 +91,39 @@ class arrow(object):
                 "Argument '{0}' {1} is of wrong type for {3}, expected {2}."
                 "".format(value, type(value), expected, self.signature)
             )
-        else:
-            return value
+        return value
+
+    def __rshift__(self, other):
+        assert isinstance(other, type(self))
+        common_types = self.signature.types[:-1]
+        assert other.signature.types[:len(common_types) - 1] == common_types[:-1]
+
+        composition = self.compose(self._fun, other._fun)
+
+        common_types.insert(0, composition)
+        common_types.append(other.signature.types[-1])
+        return arrow(*common_types)
+
+    def __lshift__(self, other):
+        assert isinstance(other, type(self))
+        return other.__rshift__(self)
+
+    # def first(self):
+    #     types = ((self.signature.args, A), (self.signature.returns, B))
+    #     return arrow(
+    #         lambda a, b: (self._fun(a), b),
+    #         *types, **self.signature.constraints
+    #         )
+
+    @staticmethod
+    def compose(f1, f2):
+        if not isinstance(f1, Callable):
+            raise StrictTypeError("'{0}' object is not callable.".format(type(f1).__name__))
+        if not isinstance(f2, Callable):
+            raise StrictTypeError("'{0}' object is not callable.".format(type(f2).__name__))
+        def composition(*args, **kwargs):
+            return f2(f1(*args, **kwargs))
+        return composition
 
     def __repr__(self):
         sig = ', '.join(

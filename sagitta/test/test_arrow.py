@@ -92,6 +92,17 @@ class TestTypedCall(object):
             t(1)
 
 
+    # def test_first(self):
+    #     add_one = lambda x: x + 1
+    #     arr = arrow(add_one, Int, Int)
+    #     g = lambda a, c: (arr(a), c)
+
+    #     expected = (1, 3)
+    #     f = arr.first()
+    #     args = (2, 3)
+    #     assert expected == f(*args)
+    #     assert isinstance(result, arrow)
+
 class TestTypedDecorator(object):
     """
     It should work as a function decorator.
