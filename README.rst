@@ -29,6 +29,27 @@ additional requirement of having an associative_ composition_ operation).
     def greater_than(a, b):
         return (a > b)
 
+Learn more about arrows:
+........................
+
+- Haskell arrows: A General Interface to Computation - introduction_ and syntax_.
+- `Arrow Tutorial`_ - Haskell wiki
+- Haskell base librararies: Control.`Arrow`_
+
+.. _introduction: http://www.haskell.org/arrows/
+.. _syntax: http://www.haskell.org/arrows/syntax.html
+.. _Arrow tutorial: http://www.haskell.org/haskellwiki/Arrow_tutorial
+.. _Arrow: http://www.haskell.org/ghc/docs/latest/html/libraries/base/Control-Arrow.html
+
+Research papers:
+................
+
+- `Generalising Monads to Arrows`_ by John Hughes at Nov 10, 1998 [PDF]
+- `Programming with Arrows`_ by John Hughes, Department of Computer Science and Engineering, Chalmers University of Technology. [PDF]
+
+.. _Generalising Monads to Arrows: http://www.cse.chalmers.se/~rjmh/Papers/arrows.pdf
+.. _Programming with Arrows: http://www.cse.chalmers.se/~rjmh/afp-arrows.pdf
+
 Categories (typeclasses_)
 -------------------------
 
