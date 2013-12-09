@@ -17,9 +17,10 @@ else:
 
 from collections import Callable
 
+from sagitta.cat import Seq
 from sagitta.exceptions import StrictTypeError
+from sagitta.inspect import classname, istype
 from sagitta.typevar import TypeVariable
-from sagitta.inspect import classname
 
 
 def typed(*types, **constraints):
@@ -82,15 +83,43 @@ class arrow(object):
             self.signature.returns)
 
     def check(self, value, expected):
-        if issubclass(expected, TypeVariable):
-            return value  # TODO add checks for typeclasses
-        if not issubclass(type(value), expected):
-            raise StrictTypeError(
-                "Argument '{0}' {1} is of wrong type for {3}, expected {2}."
-                "".format(value, type(value), expected, self.signature)
+
+        # handle instances
+        if not istype(expected):
+            # TODO handle lists, tuples, arrays custom sequences separately?
+            if isinstance(expected, Seq) and isinstance(value, Seq):
+                return self.check_sequence(value, expected)
+
+            raise NotImplementedError(
+                "Expected value {0} {1} to match type definition:\n\t{2}, of category {3}\n\t"
+                "-- if the value is of the defined type, please register it as such with a suitable\n\t"
+                "type class category, for example: ABCMeta.register(Seq, {4})"
+                "".format(value, type(value), expected, type(expected), classname(type(expected)))
             )
         else:
+            return self.check_scalar(value, expected)
+
+
+    def check_scalar(self, value, expected):
+        assert istype(expected), "Expected {0} to be a type class.".format(expected)
+
+        if issubclass(expected, TypeVariable):
+            return value  # TODO add checks for typeclasses
+
+        if issubclass(type(value), expected):
             return value
+
+        raise StrictTypeError(
+            "Argument '{0}' {1} is of wrong type for {3}, expected {2}."
+            "".format(value, type(value), expected, self.signature)
+        )
+
+    def check_sequence(self, seq, expected):
+        assert isinstance(expected, Seq) and isinstance(value, Seq)
+        return [
+            self.check(value, expected)
+            for value in seq
+        ]
 
     def __repr__(self):
         sig = ', '.join(

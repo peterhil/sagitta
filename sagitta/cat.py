@@ -13,6 +13,7 @@
 
 from abc import ABCMeta, abstractmethod
 from numbers import Number, Complex, Real, Rational, Integral
+from sagitta.inspect import classname
 
 
 # Aliases
@@ -51,6 +52,13 @@ class Ord(Eq):
         return not(self < other)
 
 
+class Seq(Category):
+
+    @abstractmethod
+    def __len__(self):
+        pass
+
+
 class Arrow(Category):
     pass
 
@@ -69,8 +77,12 @@ class Monad(Category):
 for (cat, sub) in [
     (Category, Number),
     (Category, TypeVariable),
+    (Category, Seq),
     (Eq, Complex),
     (Ord, Real),
+    (Seq, list),
+    # (Seq, tuple),
+    # (Seq, str),
     (Arrow, Monad),
 ]:
     ABCMeta.register(cat, sub)

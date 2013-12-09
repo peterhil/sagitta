@@ -17,7 +17,7 @@ from sagitta.exceptions import StrictTypeError
 from sagitta.test import raises
 
 
-class TestTypedInit(object):
+class TestArrowInit(object):
 
     def test_init(self):
         t = arrow(Bool, A, Bool, A=Num)
@@ -38,7 +38,7 @@ class TestTypedInit(object):
             arrow(uncallable, A, A)
 
 
-class TestTypedCall(object):
+class TestArrowCall(object):
     """
     It should check argument and return types.
     """
@@ -106,3 +106,16 @@ class TestTypedDecorator(object):
         assert less_than(7, 7) is False
         assert less_than(7, 3) is False
         assert type(less_than) is arrow
+
+class TestSequenceArgs(object):
+    """
+    It should accept sequences of typeclasses.
+    """
+    def test_head(self):
+
+        @typed([A], A)
+        def head(lst):
+            return lst[0]
+
+        lst = (1, 2, 3)
+        assert head(lst) == 1
